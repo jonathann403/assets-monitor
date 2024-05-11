@@ -1,4 +1,5 @@
 import sublist3r
+import datetime
 import subprocess, os
 
 
@@ -21,18 +22,13 @@ class SubdomainScanner:
                 command.extend(['-o', self.output_file])
 
             # Run GoBuster command to scan subdomains
+            before = datetime.datetime.now()
             result = subprocess.run(command, capture_output=True, text=True)
+            after = datetime.datetime.now()
 
             # Check if the command was successful
             if result.returncode == 0:
-                # If output file is specified, return None
-                if self.output_file:
-                    return None
-                # Parse the output to extract subdomains
-                subdomains = self.parse_gobuster_output(result.stdout)
-
-                # Return the list of subdomains
-                return subdomains
+                return after - before
             else:
                 # If the command failed, print the error message
                 print("Error:", result.stderr)
@@ -40,11 +36,3 @@ class SubdomainScanner:
         except FileNotFoundError:
             print("GoBuster tool not found. Make sure it's installed and in your PATH.")
             return []
-
-    @staticmethod
-    def parse_gobuster_output(output):
-        # Split the output into lines and extract subdomains
-        lines = output.split('\n')
-        subdomains = [line.strip() for line in lines if
-                      line.strip() and not line.startswith('====================================================')]
-        return subdomains

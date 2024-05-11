@@ -1,3 +1,10 @@
+# wordlists contains 10+ Gigabytes of wordlists
+wordlists/data/
+
+# files I dont want to be there
+.DS_Store
+results/.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
