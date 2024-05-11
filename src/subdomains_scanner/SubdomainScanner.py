@@ -4,7 +4,6 @@ import os
 
 class SubdomainScanner:
     def __init__(self, domain, wordlist) -> None:
-        self.command = None
         self.domain = domain
         self.wordlist = wordlist
         self.output_file = "results/" + domain
@@ -17,14 +16,10 @@ class SubdomainScanner:
 
     def start_subdomain_scan(self):
         try:
-            # Build the GoBuster command for DNS subdomain enumeration
-            self.command = ['gobuster', 'dns', '-d', self.domain, '-t', '50',  '-q', '-r', '8.8.8.8', '-c']
-            if self.wordlist:
-                self.command.extend(['-w', self.wordlist])
-            if self.output_file:
-                self.command.extend(['-o', self.output_file])
+            # python3 recon.py -d google.com -l ./wordlists/subdomains/httparchive_subdomains_2024_04_28.txt > res.txt
+            command = ['python3', './src/massdns_scripts/recon.py', '-d', self.domain, '-l', self.wordlist, '-w', self.output_file]
 
-            subprocess.run(self.command, capture_output=True, text=True)
+            subprocess.run(command)
 
         except FileNotFoundError:
             print("GoBuster tool not found. Make sure it's installed and in your PATH.")
