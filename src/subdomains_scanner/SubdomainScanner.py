@@ -9,13 +9,16 @@ class SubdomainScanner:
         self.wordlist = wordlist
         self.output_file = "results/" + domain
 
-        os.system("mkdir " + self.output_file)
+        if not os.path.exists(self.output_file):
+            os.system("mkdir " + self.output_file)
+        else:
+            raise ValueError("Condition not met, class creation aborted.")
         self.output_file += "/subdomains.txt"
 
     def start_subdomain_scan(self):
         try:
             # Build the GoBuster command for DNS subdomain enumeration
-            self.command = ['gobuster', 'dns', '-d', self.domain, '-t', '50']
+            self.command = ['gobuster', 'dns', '-d', self.domain, '-t', '50',  '-q', '-r', '8.8.8.8', '-c']
             if self.wordlist:
                 self.command.extend(['-w', self.wordlist])
             if self.output_file:
