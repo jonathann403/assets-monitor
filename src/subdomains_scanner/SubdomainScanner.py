@@ -1,6 +1,5 @@
-import sublist3r
-import datetime
-import subprocess, os
+import subprocess
+import os
 
 
 class SubdomainScanner:
@@ -9,30 +8,18 @@ class SubdomainScanner:
         self.wordlist = wordlist
         self.output_file = "results/" + domain
 
-        os.system("mkdir " + self.output_file)
+        if not os.path.exists(self.output_file):
+            os.system("mkdir " + self.output_file)
+        else:
+            raise ValueError("Condition not met, class creation aborted.")
         self.output_file += "/subdomains.txt"
 
     def start_subdomain_scan(self):
         try:
-            # Build the GoBuster command for DNS subdomain enumeration
-            command = ['gobuster', 'dns', '-d', self.domain]
-            if self.wordlist:
-                command.extend(['-w', self.wordlist])
-            if self.output_file:
-                command.extend(['-o', self.output_file])
+            # python3 recon.py -d google.com -l ./wordlists/subdomains/httparchive_subdomains_2024_04_28.txt > res.txt
+            command = ['python3', './src/massdns_scripts/recon.py', '-d', self.domain, '-l', self.wordlist, '-w', self.output_file]
 
-            # Run GoBuster command to scan subdomains
-            before = datetime.datetime.now()
-            result = subprocess.run(command, capture_output=True, text=True)
-            after = datetime.datetime.now()
+            subprocess.run(command)
 
-            # Check if the command was successful
-            if result.returncode == 0:
-                return after - before
-            else:
-                # If the command failed, print the error message
-                print("Error:", result.stderr)
-                return []
         except FileNotFoundError:
             print("GoBuster tool not found. Make sure it's installed and in your PATH.")
-            return []
