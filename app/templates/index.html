@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subdomain Scanner</title>
+    <style>
+    /* CSS styles for the table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+    </style>
+</head>
+<body>
+    <h1>Subdomain Scanner</h1>
+    <form method="post">
+        <label for="domain">Domain:</label><br>
+        <input type="text" id="domain" name="domain" required><br>
+        <label for="wordlist">Wordlist:</label><br>
+        <input type="text" id="wordlist" name="wordlist"><br>
+        <label for="output_file">Output Directory:</label><br>
+        <input type="text" id="output_file" name="output_file" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <h2>Subdomains Found:</h2>
+    <table border="1">
+        <tr>
+            <th>Subdomain</th>
+            <th>#</th>
+        </tr>
+        {% for subdomain in subdomains %}
+        <tr>
+            <td>{{ subdomain }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
