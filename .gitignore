@@ -4,6 +4,7 @@ wordlists/data/
 # files I dont want to be there
 .DS_Store
 results/.DS_Store
+results/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
