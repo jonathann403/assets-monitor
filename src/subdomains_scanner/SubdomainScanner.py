@@ -14,7 +14,7 @@ class SubdomainScanner:
             raise ValueError("Condition not met, class creation aborted.")
         self.output_file += "/subdomains.txt"
 
-    def start_subdomain_scan(self):
+    def start(self):
         try:
             # python3 recon.py -d google.com -l ./wordlists/subdomains/httparchive_subdomains_2024_04_28.txt > res.txt
             command = ['python3', './src/massdns_scripts/recon.py', '-d', self.domain, '-l', self.wordlist, '-w', self.output_file]
@@ -22,4 +22,4 @@ class SubdomainScanner:
             subprocess.run(command)
 
         except FileNotFoundError:
-            print("GoBuster tool not found. Make sure it's installed and in your PATH.")
+            print("MassDNS tool not found. Make sure it's installed and in your PATH.")
