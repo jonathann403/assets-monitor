@@ -4,10 +4,10 @@ import subprocess, os
 
 
 class SubdomainScanner:
-    def __init__(self, domain, wordlist, output_file) -> None:
+    def __init__(self, domain, wordlist) -> None:
         self.domain = domain
         self.wordlist = wordlist
-        self.output_file = output_file + domain
+        self.output_file = "results/" + domain
 
         os.system("mkdir " + self.output_file)
         self.output_file += "/subdomains.txt"
