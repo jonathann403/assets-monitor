@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request
 import json
-import run
 import os
 
 bp = Blueprint('main', __name__)
@@ -11,12 +10,15 @@ def index():
     domains = [f.path.split("./results/")[1] for f in os.scandir("./results/") if f.is_dir()]
 
     if domain:
-        subdomains_file_path = f"results/{domain}/subdomains.txt"
         httpx_json_path = f"results/{domain}/httpx.json"
 
         if os.path.exists(httpx_json_path):
             with open(httpx_json_path, 'r') as file:
-                data = json.load(file)
+                try:
+                    data = json.load(file)
+                except Exception as e:
+                    return render_template('index.html', data=False, domains=domains)
+
             return render_template('index.html', data=data, domains=domains)
 
         else:
