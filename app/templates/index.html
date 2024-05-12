@@ -49,9 +49,8 @@
         <thead>
             <tr>
                 <th>Timestamp</th>
-                <th>Port</th>
+                <th>Subdomain</th>
                 <th>URL</th>
-                <th>Input</th>
                 <th>Location</th>
                 <th>Title</th>
                 <th>Scheme</th>
@@ -73,9 +72,8 @@
             {% for item in data %}
             <tr>
                 <td>{{ item.timestamp }}</td>
-                <td>{{ item.port }}</td>
-                <td><a href="{{ item.url }}">{{ item.url }}</a></td>
                 <td>{{ item.input }}</td>
+                <td><a href="{{ item.url }}">{{ item.url }}</a></td>
                 <td><a href="{{ item.location }}">{{ item.location }}</a></td>
                 <td>{{ item.title }}</td>
                 <td>{{ item.scheme }}</td>
