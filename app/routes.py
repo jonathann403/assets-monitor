@@ -5,19 +5,23 @@ import os
 
 bp = Blueprint('main', __name__)
 
-
 @bp.route('/', methods=['GET', 'POST'])
 def index():
+    domain = request.args.get('domain')  # Get the value of 'domain' from the query string
+    domains = [f.path.split("./results/")[1] for f in os.scandir("./results/") if f.is_dir()]
 
-    subdomains = []
-    if os.path.exists("results/" + run.domain + "/httpx.json"):
-        with open("results/" + run.domain + "/httpx.json", 'r') as file:
-            data = json.load(file)
+    if domain:
+        subdomains_file_path = f"results/{domain}/subdomains.txt"
+        httpx_json_path = f"results/{domain}/httpx.json"
 
-        return render_template('index.html', data=data, subdomains=False)
+        if os.path.exists(httpx_json_path):
+            with open(httpx_json_path, 'r') as file:
+                data = json.load(file)
+            return render_template('index.html', data=data, domains=domains)
 
-    elif os.path.exists("results/" + run.domain + "/subdomains.txt"):
-        with open("results/" + run.domain + "/subdomains.txt", 'r') as file:
-            subdomains = file.readlines()
+        else:
+            # Handle the case when neither file exists for the specified domain
+            return render_template('index.html', data=False, domains=domains)
 
-        return render_template('index.html', subdomains=subdomains, data=False)
+    else:
+        return render_template('index.html', data=False, domains=domains)

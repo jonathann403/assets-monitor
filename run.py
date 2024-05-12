@@ -4,14 +4,14 @@ from src.httpx_scanner import HttpxScanner
 
 from multiprocessing import Process, set_start_method
 
-domain = "ynet.co.il"
+domain = "stripe.com"
 
 def run_scanner():
     try:
-        #subdomain_scanner = SubdomainScanner(domain, "./wordlists/subdomains/httparchive_subdomains_2024_04_28.txt")
-        #subdomain_scanner.start()
+        subdomain_scanner = SubdomainScanner(domain, "./wordlists/subdomains/httparchive_subdomains_2024_04_28.txt")
+        subdomain_scanner.start()
 
-        httpx_scanner = HttpxScanner("./results/ynet.co.il/subdomains.txt", domain)
+        httpx_scanner = HttpxScanner(subdomain_scanner.output_file, domain)
         httpx_scanner.start()
     except Exception as e:
         print(e)
@@ -34,8 +34,8 @@ def main():
     flask_app_process.start()
     scanner_process.start()
 
-    scanner_process.join()
     flask_app_process.join()
+    scanner_process.join()
 
 
 if __name__ == '__main__':
