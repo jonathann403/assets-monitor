@@ -23,7 +23,19 @@
     </style>
 </head>
 <body>
-    <h1>Subdomain Scanner</h1>
+    <h1>Assets Monitor</h1>
+    {% if domains %}
+        <form action="/" method="get">
+            <select id="domain" name="domain">
+                <option value="">select</option>
+                {% for domain in domains %}
+                    <option value="{{ domain }}">{{ domain }}</option>
+                {% endfor %}
+            </select><input type="submit" value="GO!">
+        </form>
+    {% endif %}
+
+    <!--
     <form method="post">
         <label for="domain">Domain:</label><br>
         <input type="text" id="domain" name="domain" required><br>
@@ -33,6 +45,7 @@
         <input type="text" id="output_file" name="output_file" required><br><br>
         <input type="submit" value="Submit">
     </form>
+    -->
 
 
 {% if data %}
@@ -59,9 +72,6 @@
                 <th>Lines</th>
                 <th>Status Code</th>
                 <th>Content Length</th>
-                <th>Failed</th>
-                <th>Page Type</th>
-                <th>pHash</th>
             </tr>
         </thead>
         <tbody>
@@ -81,28 +91,20 @@
                 <td>{{ item.path }}</td>
                 <td>{{ item.time }}</td>
                 <td>{{ item.a.0 }}</td>
-                <td>{{ item.tech.0 if item.tech is defined else "none"}}</td>
+                <td>{{ item.tech | join(', ') if item.tech is defined else "none"}}</td>
                 <td>{{ item.words }}</td>
                 <td>{{ item.lines }}</td>
                 <td>{{ item.status_code }}</td>
                 <td>{{ item.content_length }}</td>
-                <td>{{ item.failed }}</td>
-                <td>{{ item.knowledgebase.PageType }}</td>
-                <td>{{ item.knowledgebase.pHash }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+{% else %}
+    <h1>Specify domain</h1>
 {% endif %}
 
-{% if subdomains %}
-    <h1>Subdomains</h1>
-    <ul>
-        {% for subdomain in subdomains %}
-        <li>{{ subdomain }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
 
 </body>
 </html>
