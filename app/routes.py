@@ -11,14 +11,12 @@ bp = Blueprint('main', __name__)
 running_scans = []
 
 def run_scanner(domain):
-    try:
-        subdomain_scanner = SubdomainScanner(domain, "./wordlists/subdomains/httparchive_subdomains_2024_04_28.txt")
-        subdomain_scanner.start()
+    subdomain_scanner = SubdomainScanner(domain, "./wordlists/subdomains/httparchive_subdomains_2024_04_28.txt")
+    subdomain_scanner.start()
 
-        httpx_scanner = HttpxScanner(subdomain_scanner.output_file, domain)
-        httpx_scanner.start()
-    except Exception as e:
-        raise Exception("scan canceled")
+    httpx_scanner = HttpxScanner(subdomain_scanner.output_file, domain)
+    httpx_scanner.start()
+
 
 @bp.route('/', methods=['GET'])
 def index():
@@ -53,7 +51,10 @@ def scan():
 
     def start_scanner():
         running_scans.append(domain)
-        run_scanner(domain)
+        try:
+            run_scanner(domain)
+        except Exception as e:
+            print(e)
         running_scans.remove(domain)
 
     # Create a new thread to run the scanner process

@@ -16,16 +16,19 @@ class HttpxScanner:
     def start(self):
         try:
             # httpx -l list -title -status-code -tech-detect -follow-redirects
-            command = ['cat', self.input_file, '|', 'httpx', '-title', '-status-code', '-tech-detect', '-server', '-lc', '-wc', '-j', '-o', self.output_file]
+            command = ['cat', self.input_file, '|', 'httpx', '-title', '-status-code', '-tech-detect', '-server', '-lc', '-wc', '-silent', '-j', '-o', self.output_file]
 
             try:
                 subprocess.run(" ".join(command), shell=True, check=True)
                 with open(self.output_file, 'r') as f:
                     lines = f.readlines()
 
-                lines[0] = '[\n' + lines[0]
-                lines = [line.rstrip('\n') + ',' for line in lines]
-                lines[-1] = lines[-1][:-1] + '\n]'
+                try:
+                    lines[0] = '[\n' + lines[0]
+                    lines = [line.rstrip('\n') + ',' for line in lines]
+                    lines[-1] = lines[-1][:-1] + '\n]'
+                except Exception as e:
+                    raise Exception("Httpx couldn't resolve those subdomains.")
 
                 with open(self.output_file, 'w') as f:
                     f.writelines(lines)
@@ -36,4 +39,4 @@ class HttpxScanner:
                 print(f"Error executing command: {e}")
 
         except FileNotFoundError:
-            print("Httpx tool not found. Make sure it's installed and in your PATH.")
+            raise Exception("Httpx tool not found. Make sure it's installed and in your PATH.")
