@@ -8,7 +8,7 @@ from src.httpx_scanner import HttpxScanner
 
 bp = Blueprint('main', __name__)
 
-running_scans = {}
+running_scans = []
 
 def run_scanner(domain):
     try:
@@ -33,16 +33,13 @@ def index():
                 try:
                     data = json.load(file)
                 except Exception as e:
-                    return render_template('index.html', data=False, domains=domains)
+                    return render_template('index.html', data=False, domains=domains, running_scans=running_scans)
 
-            return render_template('index.html', data=data, domains=domains)
-
-        else:
-            # Handle the case when neither file exists for the specified domain
-            return render_template('index.html', data=False, domains=domains)
+            return render_template('index.html', data=data, domains=domains, running_scans=running_scans)
+        return render_template('index.html', data=False, domains=domains, running_scans=running_scans)
 
     else:
-        return render_template('index.html', data=False, domains=domains)
+        return render_template('index.html', data=False, domains=domains, running_scans=running_scans)
 
 
 @bp.route('/scan/', methods=['POST'])
@@ -51,13 +48,13 @@ def scan():
     domains = [f.path.split("./results/")[1] for f in os.scandir("./results/") if f.is_dir()]
 
     # Check if a scan is already running for the domain
-    if domain in running_scans and running_scans[domain] or domain in domains:
+    if domain in running_scans and domain in domains or domain in domains:
         return render_template('scan.html', message=f"Scan for domain: {domain} already exists")
 
     def start_scanner():
-        running_scans[domain] = True
+        running_scans.append(domain)
         run_scanner(domain)
-        running_scans[domain] = False
+        running_scans.remove(domain)
 
     # Create a new thread to run the scanner process
     scanner_thread = threading.Thread(target=start_scanner)
