@@ -36,6 +36,7 @@
             <button type="submit" class="btn btn-primary">Go!</button>
         </form>
         {% endif %}
+
         <hr>
 
         <!-- Form for initiating a new scan -->
@@ -47,10 +48,13 @@
             </div>
             <button type="submit" class="btn btn-primary">Scan</button>
         </form>
+
         <hr>
                 <!-- Display running scans -->
         <h2>Running Scans:</h2>
         <h4>{{ running_scans | join(', ') if running_scans is defined else "No scans are running" }}</h4>
+
+        <hr>
     </div>
 
 
