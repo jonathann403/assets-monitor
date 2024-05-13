@@ -41,7 +41,7 @@
 
         <!-- Form for initiating a new scan -->
         <h2>Start a New Scan:</h2>
-        <form method="post" action="/scan/">
+        <form id="scanForm" method="post" action="/scan/">
             <div class="mb-3">
                 <label for="domain" class="form-label">Enter Domain:</label>
                 <input type="text" name="domain" class="form-control" required>
@@ -114,7 +114,16 @@
 
 <script>
     $(document).ready(function() {
-        $('#dataTable').DataTable();
+        $('#dataTable').DataTable()
+
+        $('#scanForm').submit(function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            var formData = $(this).serialize(); // Serialize form data
+            $.post($(this).attr('action'), formData, function(response) {
+                // Display the response
+                alert(response)
+                });
+            });
     });
 </script>
 

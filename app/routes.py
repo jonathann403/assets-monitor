@@ -49,7 +49,7 @@ def scan():
 
     # Check if a scan is already running for the domain
     if domain in running_scans and domain in domains or domain in domains:
-        return render_template('scan.html', message=f"Scan for domain: {domain} already exists")
+        return render_template('scan.html', message=f"Scan for domain {domain} already exists")
 
     def start_scanner():
         running_scans.append(domain)
