@@ -18,29 +18,48 @@
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 </head>
 <body>
-    <h1>Assets Monitor</h1>
-    {% if domains %}
-        <form action="/" method="get">
-            <select id="domain" name="domain">
-                <option value="">select</option>
-                {% for domain in domains %}
-                    <option value="{{ domain }}">{{ domain }}</option>
-                {% endfor %}
-            </select><input type="submit" value="GO!">
-        </form>
-    {% endif %}
+    <div class="container">
+        <h1>Assets Monitor</h1>
 
-    <br>
-    <form method="post" action="/scan/">
-        <label for="domain">Domain:</label><br>
-        <input type="text" name="domain" required><br>
-        <input type="submit" value="Scan">
-    </form>
+        <!-- Dropdown for selecting domains -->
+        {% if domains %}
+        <form action="/" method="get">
+            <div class="mb-3">
+                <label for="domain" class="form-label">Select Domain:</label>
+                <select id="domain" name="domain" class="form-select">
+                    <option value="">Select</option>
+                    {% for domain in domains %}
+                    <option value="{{ domain }}">{{ domain }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Go!</button>
+        </form>
+        {% endif %}
+
+        <hr>
+
+        <!-- Form for initiating a new scan -->
+        <h2>Start a New Scan:</h2>
+        <form method="post" action="/scan/">
+            <div class="mb-3">
+                <label for="domain" class="form-label">Enter Domain:</label>
+                <input type="text" name="domain" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Scan</button>
+        </form>
+
+        <hr>
+                <!-- Display running scans -->
+        <h2>Running Scans:</h2>
+        <h4>{{ running_scans | join(', ') if running_scans is defined else "No scans are running" }}</h4>
+
+        <hr>
+    </div>
 
 
 
 {% if data %}
-    <h1>HTTPX JSON Data</h1>
     <table id="dataTable" class="table table-striped table-bordered">
         <thead>
             <tr>
@@ -90,8 +109,7 @@
         </tbody>
     </table>
 
-{% else %}
-    <h1>Specify domain</h1>
+
 {% endif %}
 
 <script>
