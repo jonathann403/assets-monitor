@@ -30,17 +30,13 @@
         </form>
     {% endif %}
 
-    <!--
-    <form method="post">
+    <br>
+    <form method="post" action="/scan/">
         <label for="domain">Domain:</label><br>
-        <input type="text" id="domain" name="domain" required><br>
-        <label for="wordlist">Wordlist:</label><br>
-        <input type="text" id="wordlist" name="wordlist"><br>
-        <label for="output_file">Output Directory:</label><br>
-        <input type="text" id="output_file" name="output_file" required><br><br>
-        <input type="submit" value="Submit">
+        <input type="text" name="domain" required><br>
+        <input type="submit" value="Scan">
     </form>
-    -->
+
 
 
 {% if data %}
