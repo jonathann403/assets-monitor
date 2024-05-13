@@ -2,7 +2,7 @@
 
 Assets Monitor is a web interface application written in Python that allows you to monitor subdomains, directories, and various types of assets using HTTPX and MassDNS.
 ## Images (beta)
-![Assets Monitor Beta](./images/1.jpeg)
+![Assets Monitor Beta](./images/demo.jpeg)
 ## Prerequisites
 
 Before using Assets Monitor, ensure you have the following dependencies installed:
