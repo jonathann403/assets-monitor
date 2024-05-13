@@ -122,6 +122,7 @@
             $.post($(this).attr('action'), formData, function(response) {
                 // Display the response
                 alert(response)
+                location.reload();
                 });
             });
     });
