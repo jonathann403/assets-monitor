@@ -22,33 +22,64 @@
         <h1>Assets Monitor</h1>
 
         <!-- Dropdown for selecting domains -->
-        {% if domains %}
+
         <form action="/" method="get">
             <div class="mb-3">
                 <label for="domain" class="form-label">Select Domain:</label>
                 <select id="domain" name="domain" class="form-select">
                     <option value="">Select</option>
-                    {% for domain in domains %}
-                    <option value="{{ domain }}">{{ domain }}</option>
-                    {% endfor %}
+                    {% if domains %}
+                        {% for domain in domains %}
+                            <option value="{{ domain }}">{{ domain }}</option>
+                        {% endfor %}
+                    {% endif %}
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Go!</button>
         </form>
-        {% endif %}
+
 
         <hr>
 
         <!-- Form for initiating a new scan -->
-        <h2>Start a New Scan:</h2>
-        <form id="scanForm" method="post" action="/scan/">
-            <div class="mb-3">
-                <label for="domain" class="form-label">Enter Domain:</label>
-                <input type="text" name="domain" class="form-control" required>
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Start a New Scan:</h2>
+                <form id="scanForm" method="post" action="/scan/">
+                    <div class="mb-3">
+                        <label for="domain" class="form-label">Enter Domain:</label>
+                        <input type="text" name="domain" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Scan</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">Scan</button>
-        </form>
+            <div class="col-md-6">
+                <h2>Expand an Existing Scan:</h2>
 
+                <form id="expandScanForm" method="post" action="/expand-scan/">
+                    <div class="mb-3">
+                        <label for="existing_domain" class="form-label">Select Domain:</label>
+                        <select id="existing_domain" name="existing_domain" class="form-select">
+                            <option value="">Select</option>
+                            {% if domains %}
+                                {% for domain in domains %}
+                                <option value="{{ domain }}">{{ domain }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="scan_options" class="form-label">Scan Options:</label>
+                        <select id="scan_options" name="scan_options" class="form-select">
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Expand Scan</button>
+                </form>
+            </div>
+        </div>
         <hr>
                 <!-- Display running scans -->
         <h2>Running Scans:</h2>
@@ -71,14 +102,8 @@
                 <th>Scheme</th>
                 <th>Webserver</th>
                 <th>Content Type</th>
-                <th>Method</th>
                 <th>Host</th>
-                <th>Path</th>
-                <th>Time</th>
-                <th>IP Address</th>
                 <th>Technology</th>
-                <th>Words</th>
-                <th>Lines</th>
                 <th>Status Code</th>
                 <th>Content Length</th>
             </tr>
@@ -94,14 +119,8 @@
                 <td>{{ item.scheme }}</td>
                 <td>{{ item.webserver }}</td>
                 <td>{{ item.content_type }}</td>
-                <td>{{ item.method }}</td>
                 <td>{{ item.host }}</td>
-                <td>{{ item.path }}</td>
-                <td>{{ item.time }}</td>
-                <td>{{ item.a.0 }}</td>
                 <td>{{ item.tech | join(', ') if item.tech is defined else "none"}}</td>
-                <td>{{ item.words }}</td>
-                <td>{{ item.lines }}</td>
                 <td>{{ item.status_code }}</td>
                 <td>{{ item.content_length }}</td>
             </tr>
