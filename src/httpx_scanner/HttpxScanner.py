@@ -1,5 +1,15 @@
 import subprocess
+import json
 import os
+
+
+def adjust_txt_file(txt_file_path, json_file_path):
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+        inputs = [entry['input'] for entry in data]
+
+    with open(txt_file_path, 'w') as txt_file:
+        txt_file.write('\n'.join(inputs))
 
 
 class HttpxScanner:
@@ -32,6 +42,8 @@ class HttpxScanner:
 
                 with open(self.output_file, 'w') as f:
                     f.writelines(lines)
+
+                adjust_txt_file(self.input_file, self.output_file)
 
             except subprocess.CalledProcessError as e:
                 print(f"Error executing command: {e}")
