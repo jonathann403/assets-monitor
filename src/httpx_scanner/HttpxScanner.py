@@ -33,8 +33,6 @@ class HttpxScanner:
                 with open(self.output_file, 'w') as f:
                     f.writelines(lines)
 
-                from app.routes import running_scans
-                running_scans.remove(self.domain)
             except subprocess.CalledProcessError as e:
                 print(f"Error executing command: {e}")
 
