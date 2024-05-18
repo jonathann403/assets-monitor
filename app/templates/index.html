@@ -94,9 +94,7 @@
     <table id="dataTable" class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>Timestamp</th>
                 <th>Subdomain</th>
-                <th>URL</th>
                 <th>Location</th>
                 <th>Title</th>
                 <th>Scheme</th>
@@ -111,9 +109,7 @@
         <tbody>
             {% for item in data %}
             <tr>
-                <td>{{ item.timestamp }}</td>
-                <td>{{ item.input }}</td>
-                <td><a href="{{ item.url }}">{{ item.url }}</a></td>
+                <td><a href="{{ item.url }}">{{ item.input }}</a></td>
                 <td><a href="{{ item.location }}">{{ item.location }}</a></td>
                 <td>{{ item.title }}</td>
                 <td>{{ item.scheme }}</td>
