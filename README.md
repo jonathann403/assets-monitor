@@ -15,7 +15,7 @@ Before using Assets Monitor, ensure you have the following dependencies installe
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/jonathan403/assets-monitor.git
+    git clone https://github.com/jonathann403/assets-monitor.git
     ```
 
 2. Install Python dependencies:
