@@ -1,0 +1,10 @@
+# Web application
+Flask>=3.0,<4.0
+
+# Subdomain enumeration (src/massdns_scripts/recon.py)
+dnspython>=2.4
+psutil>=5.9
+tqdm>=4.66
+
+# Optional: enables IPv6 route detection in recon.py. Safe to omit.
+pyroute2>=0.7 ; sys_platform == "linux"

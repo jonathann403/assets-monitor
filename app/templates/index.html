@@ -1,147 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assets monitor</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subdomain Scanner</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- DataTables JavaScript -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assets Monitor</title>
+  <meta name="description" content="Attack surface monitoring — subdomain enumeration and HTTP probing.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='%2322d3ee'/></svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 </head>
-<body>
-    <div class="container">
+<body data-preselect="{{ preselect or '' }}" data-max-scans="{{ max_scans }}">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+      </div>
+      <div>
         <h1>Assets Monitor</h1>
-
-        <!-- Dropdown for selecting domains -->
-
-        <form action="/" method="get">
-            <div class="mb-3">
-                <label for="domain" class="form-label">Select Domain:</label>
-                <select id="domain" name="domain" class="form-select">
-                    <option value="">Select</option>
-                    {% if domains %}
-                        {% for domain in domains %}
-                            <option value="{{ domain }}">{{ domain }}</option>
-                        {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Go!</button>
-        </form>
-
-
-        <hr>
-
-        <!-- Form for initiating a new scan -->
-        <div class="row">
-            <div class="col-md-6">
-                <h2>Start a New Scan:</h2>
-                <form id="scanForm" method="post" action="/scan/">
-                    <div class="mb-3">
-                        <label for="domain" class="form-label">Enter Domain:</label>
-                        <input type="text" name="domain" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Scan</button>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <h2>Expand an Existing Scan:</h2>
-
-                <form id="expandScanForm" method="post" action="/expand-scan/">
-                    <div class="mb-3">
-                        <label for="existing_domain" class="form-label">Select Domain:</label>
-                        <select id="existing_domain" name="existing_domain" class="form-select">
-                            <option value="">Select</option>
-                            {% if domains %}
-                                {% for domain in domains %}
-                                <option value="{{ domain }}">{{ domain }}</option>
-                                {% endfor %}
-                            {% endif %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="scan_options" class="form-label">Scan Options:</label>
-                        <select id="scan_options" name="scan_options" class="form-select">
-                            <option value="option1">Option 1</option>
-                            <option value="option2">Option 2</option>
-                            <!-- Add more options as needed -->
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Expand Scan</button>
-                </form>
-            </div>
-        </div>
-        <hr>
-                <!-- Display running scans -->
-        <h2>Running Scans:</h2>
-        <h4>{{ running_scans | join(', ') if running_scans is defined else "No scans are running" }}</h4>
-
-        <hr>
+        <p>Attack surface monitoring</p>
+      </div>
     </div>
+    <div class="topbar-right">
+      <div class="capacity" id="capacity"></div>
+      <button class="icon-btn" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
 
+  <main>
+    <section class="scan-panel">
+      <form id="scan-form" autocomplete="off">
+        <label for="domain-input">Start a new scan</label>
+        <div class="input-row">
+          <input type="text" id="domain-input" name="domain" placeholder="example.com"
+                 spellcheck="false" autocapitalize="off" required>
+          <button type="submit" class="btn" id="scan-btn">Scan</button>
+        </div>
+        <p class="field-error" id="scan-error" role="alert"></p>
+      </form>
+    </section>
 
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-head">
+          <h2>Domains</h2>
+          <span class="pill" id="domain-count">0</span>
+        </div>
+        <ul class="domain-list" id="domain-list"></ul>
+        <p class="empty" id="domain-empty" hidden>No scans yet. Start one above.</p>
+      </aside>
 
-{% if data %}
-    <table id="dataTable" class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>Subdomain</th>
-                <th>Location</th>
-                <th>Title</th>
-                <th>Scheme</th>
-                <th>Webserver</th>
-                <th>Content Type</th>
-                <th>Host</th>
-                <th>Technology</th>
-                <th>Status Code</th>
-                <th>Content Length</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in data %}
-            <tr>
-                <td><a href="{{ item.url }}">{{ item.input }}</a></td>
-                <td><a href="{{ item.location }}">{{ item.location }}</a></td>
-                <td>{{ item.title }}</td>
-                <td>{{ item.scheme }}</td>
-                <td>{{ item.webserver }}</td>
-                <td>{{ item.content_type }}</td>
-                <td>{{ item.host }}</td>
-                <td>{{ item.tech | join(', ') if item.tech is defined else "none"}}</td>
-                <td>{{ item.status_code }}</td>
-                <td>{{ item.content_length }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+      <section class="content">
+        <div class="detail-empty" id="detail-empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
+          </svg>
+          <div>Select a domain to view its assets,<br>or start a new scan above.</div>
+        </div>
 
+        <div id="detail" hidden>
+          <div class="detail-head">
+            <div>
+              <h2 id="detail-domain"></h2>
+              <p class="sub" id="detail-sub"></p>
+            </div>
+            <div class="detail-actions">
+              <a class="btn btn-ghost btn-sm" id="export-csv">Export CSV</a>
+              <button class="btn btn-ghost btn-sm" id="export-json">Export JSON</button>
+              <button class="btn btn-ghost btn-sm" id="rescan-btn">Re-scan</button>
+              <button class="btn btn-danger btn-sm" id="delete-btn">Delete</button>
+            </div>
+          </div>
 
-{% endif %}
+          <div class="stat-grid" id="stat-grid"></div>
 
-<script>
-    $(document).ready(function() {
-        $('#dataTable').DataTable()
+          <div class="table-controls">
+            <input type="search" id="table-search" placeholder="Filter by subdomain, title, server, tech…">
+            <div class="status-filters" id="status-filters"></div>
+          </div>
 
-        $('#scanForm').submit(function(e) {
-            e.preventDefault(); // Prevent the default form submission
-            var formData = $(this).serialize(); // Serialize form data
-            $.post($(this).attr('action'), formData, function(response) {
-                // Display the response
-                alert(response)
-                location.reload();
-                });
-            });
-    });
-</script>
+          <div class="table-wrap">
+            <table class="results" id="results-table">
+              <thead id="results-head"></thead>
+              <tbody id="results-body"></tbody>
+            </table>
+          </div>
+          <p class="results-empty" id="results-empty" hidden></p>
+        </div>
+      </section>
+    </div>
+  </main>
 
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <noscript><p style="text-align:center;color:#8a97a6">Assets Monitor needs JavaScript enabled.</p></noscript>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
